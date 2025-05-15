@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #000;
+        }
+        .video-container {
+            width: 100%;
+            max-width: 1280px;
+            aspect-ratio: 16/9;
+            position: relative;
+            background-color: #000;
+        }
+        [data-html5-video] {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            display: block;
+        }
+        .error-message {
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <video id="videoPlayer" data-html5-video="" muted="true" preload="metadata" controls>
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const blobUrl = urlParams.get('video');
+            const videoPlayer = document.getElementById('videoPlayer');
+
+            if (blobUrl) {
+                try {
+                    // Validate if it's a blob URL
+                    if (blobUrl.startsWith('blob:')) {
+                        videoPlayer.src = blobUrl;
+                    } else {
+                        throw new Error('Invalid blob URL format');
+                    }
+                } catch (error) {
+                    const container = document.querySelector('.video-container');
+                    container.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+                }
+            } else {
+                const container = document.querySelector('.video-container');
+                container.innerHTML = '<div class="error-message">No video URL provided. Please add a ?video=blob:... parameter to the URL.</div>';
+            }
+        });
+    </script>
+</body>
+</html> 
